@@ -1,23 +1,24 @@
 # 🌙 بوابة كلارا وباسل — Clara & Bassel Portal
 
-A private, mobile-first Arabic complaint management portal built with React, Node.js, Express, and MongoDB.
+A private, mobile-first Arabic complaint management portal built with React, deployed on Netlify with Netlify Functions and Netlify Database (Postgres).
 
 ---
 
-## 📁 Project Structure (Monorepo)
+## 📁 Project Structure
 
 ```
 clara-Bassel-portal/
-├── package.json          ← Root: runs both servers with concurrently
-├── README.md
-├── backend/
-│   ├── package.json
-│   ├── server.js         ← Express entry point
-│   ├── .env              ← Environment variables
-│   ├── models/
-│   │   └── Complaint.js  ← Mongoose schema
-│   └── routes/
-│       └── complaints.js ← REST API routes
+├── netlify.toml              ← Build & redirect configuration
+├── package.json               ← Root: function dependencies
+├── db/
+│   ├── schema.ts               ← Drizzle table definitions
+│   └── index.ts                ← Drizzle client
+├── drizzle.config.ts
+├── netlify/
+│   ├── functions/
+│   │   ├── complaints.mts      ← GET / POST /api/complaints
+│   │   └── complaints-id.mts   ← PATCH /api/complaints/:id
+│   └── database/migrations/    ← Generated SQL migrations
 └── frontend/
     ├── package.json
     ├── tailwind.config.js
@@ -36,53 +37,15 @@ clara-Bassel-portal/
 
 ---
 
-## ✅ Prerequisites
+## 🚀 Local Development
 
-Make sure you have these installed:
-
-| Tool | Version | Check |
-|------|---------|-------|
-| Node.js | ≥ 18.x | `node --version` |
-| npm | ≥ 9.x  | `npm --version` |
-| MongoDB | ≥ 6.x (local) | `mongod --version` |
-
-> **MongoDB**: Either run a local instance (`brew install mongodb-community` on Mac) or use **MongoDB Atlas** (free cloud DB).
-
----
-
-## 🚀 Quick Start (3 Steps)
-
-### Step 1 — Clone & Install Everything
+Run the site locally with the Netlify CLI, which builds the frontend, serves the Functions, and provisions a local Netlify Database branch automatically:
 
 ```bash
-# Navigate to the project folder
-cd clara-Bassel-portal
-
-# Install root + backend + frontend dependencies in one shot
-npm run install:all
+netlify dev
 ```
 
-### Step 2 — Configure Environment
-
-Edit `backend/.env` if needed:
-
-```env
-PORT=5001
-MONGO_URI=mongodb://127.0.0.1:27017/clara-Bassel-portal
-```
-
-> For **MongoDB Atlas**, replace MONGO_URI with your connection string:
-> `MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/clara-Bassel-portal`
-
-### Step 3 — Start Both Servers
-
-```bash
-# From the root folder — starts backend + frontend simultaneously
-npm run dev
-```
-
-- **Frontend** → http://localhost:3000
-- **Backend API** → http://localhost:5001
+- **Site** → http://localhost:8888
 
 ---
 
@@ -93,7 +56,6 @@ npm run dev
 | `GET` | `/api/complaints` | Fetch all complaints |
 | `POST` | `/api/complaints` | Create a new complaint |
 | `PATCH` | `/api/complaints/:id` | Update status or compensation link |
-| `GET` | `/api/health` | Health check |
 
 ### POST Body Example
 ```json
@@ -118,7 +80,7 @@ To test on your iPhone:
 
 1. Connect your phone and Mac to the **same Wi-Fi**
 2. Find your Mac's local IP: `ipconfig getifaddr en0` (Mac) or `hostname -I` (Linux)
-3. Open Safari on iPhone → `http://YOUR_MAC_IP:3000`
+3. Open Safari on iPhone → `http://YOUR_MAC_IP:8888`
 
 ---
 
@@ -140,11 +102,8 @@ To test on your iPhone:
 ## 🛠 Individual Commands
 
 ```bash
-# Backend only
-cd backend && npm run dev
-
-# Frontend only
-cd frontend && npm start
+# Frontend only (proxies API calls via netlify dev)
+netlify dev
 
 # Build frontend for production
 cd frontend && npm run build

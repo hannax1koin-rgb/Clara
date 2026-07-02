@@ -31,7 +31,7 @@ export default function ComplaintsList() {
       if (!res.ok) throw new Error();
       const updated = await res.json();
       setComplaints((prev) =>
-        prev.map((c) => (c._id === updated._id ? updated : c))
+        prev.map((c) => (c.id === updated.id ? updated : c))
       );
     } catch {
       alert('حدث خطأ أثناء التحديث');
@@ -40,7 +40,7 @@ export default function ComplaintsList() {
 
   const toggleStatus = (item) => {
     const next = item.status === 'لم يتم الحل' ? 'تم الحل' : 'لم يتم الحل';
-    updateComplaint(item._id, { status: next });
+    updateComplaint(item.id, { status: next });
   };
 
   if (loading) {
@@ -80,7 +80,7 @@ export default function ComplaintsList() {
       </div>
       {complaints.map((item) => (
         <ComplaintCard
-          key={item._id}
+          key={item.id}
           item={item}
           onToggleStatus={toggleStatus}
           onUpdate={updateComplaint}
@@ -102,7 +102,7 @@ function ComplaintCard({ item, onToggleStatus, onUpdate }) {
     const url = linkInput.trim();
     if (!url) return;
     setSavingLink(true);
-    await onUpdate(item._id, { compensationLink: url });
+    await onUpdate(item.id, { compensationLink: url });
     setSavingLink(false);
     setLinkInput('');
     setShowLinkInput(false);
