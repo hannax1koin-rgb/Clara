@@ -11,3 +11,6 @@ coverage/
 tmp/
 temp/
 *.tsbuildinfo
+
+# Local Netlify folder
+.netlify
