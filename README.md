@@ -112,3 +112,19 @@ cd frontend && npm run build
 ---
 
 Made with 🌹 for Clara & Bassel — *باسل بيسمع كل شكوى* 💕
+
+## 🚀 Deploy on Sevalla
+
+1. Push this repo to GitHub.
+2. In Sevalla, create a new **Application** → connect this repo. Sevalla will detect the `Dockerfile` automatically and build with it (no Nixpacks config needed).
+3. Add a **Postgres database** add-on (or connect an external one) and copy its connection string.
+4. Set environment variables on the Sevalla app:
+   - `DATABASE_URL` → your Postgres connection string
+   - `NODE_ENV=production`
+5. Sevalla injects `PORT` automatically — `server.js` already reads `process.env.PORT`.
+6. Run the migration once (via Sevalla's shell/console, or locally against the same `DATABASE_URL`):
+```bash
+   npx drizzle-kit push
+```
+7. Deploy — Sevalla will build the Docker image, boot the container, and route traffic to it. The Express server serves both the API (`/api/complaints`) and the built React app.
+8. 
