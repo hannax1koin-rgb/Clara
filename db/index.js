@@ -1,5 +1,14 @@
-import { MongoClient } from "mongodb";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "./schema.js";
 
-const client = new MongoClient(process.env.MONGODB_URL);
-await client.connect();
-export const db = client.db("clara");
+const useSsl =
+  process.env.NODE_ENV === "production" ||
+  (process.env.DATABASE_URL || "").includes("sslmode=require");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || "postgres://localhost:5432/clara",
+  ssl: useSsl ? { rejectUnauthorized: false } : false,
+});
+
+export const db = drizzle(pool, { schema });
